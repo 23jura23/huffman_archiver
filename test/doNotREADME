@@ -1,0 +1,65 @@
+useful for autotest creation version of HuffmanArchiver::initTree
+
+void HuffmanArchiver::initTree(const std::vector<std::pair<char_type, codeType>>& allCodes) {
+    using std::cerr, std::endl;
+    for (size_t i = 0; i < allCodes.size(); ++i) {
+        cerr << "ht.setNode(" << allCodes[i].first << ", HuffmanNode{codeType{bitStorage{\"" << allCodes[i].second.first.to_string() << "\"}, " << allCodes[i].second.second << "}});" << endl;
+        tree.setNode(allCodes[i].first, HuffmanNode{allCodes[i].second});
+    }
+    tree.buildTreeBackward();
+}
+
+a VERY useful debugTraverse: (an ugly, but cool one)
+
+#define TEST_GEN
+void HuffmanTree::debugTraverse(size_t now) {
+    using std::cerr, std::endl;
+#ifdef TEST_GEN
+    if (rootIndex.has_value())
+        cerr << "CHECK_EQ(root, " << rootIndex.value() << ");\n";
+    cerr << "REQUIRE_EQ(cnodes.size(), " << nodes.size() << ");\n";
+#endif
+    debugTraverse(now, "");
+}
+
+void HuffmanTree::debugTraverse(size_t now, std::string tab) {
+    using std::cerr, std::endl;
+
+#ifdef TEST_GEN
+    cerr << "CHECK_EQ(cnodes[" << now << "].count, " << nodes[now].count << ");\n";
+#endif
+    if (nodes[now].leftSon.has_value()) {
+        debugTraverse(nodes[now].leftSon.value(), tab + "\t");
+#ifdef TEST_GEN
+        cerr << "CHECK_EQ(cnodes[" << now << "].leftSon.value(), " << nodes[now].leftSon.value() << ");\n";
+#endif
+    }
+    if (now <= 256) {
+        std::string s = nodes[now].binaryCode.value().first.to_string();
+#ifdef TEST_GEN
+        cerr << "CHECK_EQ(cnodes[" << now << "].binaryCode.value().second, " << nodes[now].binaryCode.value().second << ");\n";
+        cerr << "CHECK_EQ(cnodes[" << now << "].binaryCode.value().first.to_string(), \"" << nodes[now].binaryCode.value().first.to_string()
+             << "\");\n";
+#endif
+        reverse(s.begin(), s.end());
+        s = s.substr(0, nodes[now].binaryCode.value().second);
+#ifndef TEST_GEN
+        std::cerr << tab << now << ' ' << s << std::endl << std::endl;
+#else
+#endif
+    } else {
+#ifndef TEST_GEN
+        std::cerr << tab << now << std::endl << std::endl;
+#else
+        cerr << "CHECK(!cnodes[" << now << "].binaryCode.has_value()"
+             << ");\n";
+#endif
+    }
+    if (nodes[now].rightSon.has_value()) {
+        debugTraverse(nodes[now].rightSon.value(), tab + "\t");
+#ifdef TEST_GEN
+        cerr << "CHECK_EQ(cnodes[" << now << "].rightSon.value(), " << nodes[now].rightSon.value() << ");\n";
+#endif
+    }
+}
+

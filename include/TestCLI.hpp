@@ -1,0 +1,4 @@
+#ifndef _INCLUDE_TEST_CLI_HPP
+#define _INCLUDE_TEST_CLI_HPP
+
+#endif  // _INCLUDE_TEST_CLI_HPP
