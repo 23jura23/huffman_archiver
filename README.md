@@ -1,6 +1,6 @@
 # Huffman archiver
 
-A small tool to archive and extract files using [huffman coding](https://en.wikipedia.org/wiki/Huffman_coding)
+A small tool to archive and extract files using [Huffman coding](https://en.wikipedia.org/wiki/Huffman_coding)
 
 Briefly, the archiving process:
 1. Reads file
